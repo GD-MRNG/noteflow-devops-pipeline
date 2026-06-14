@@ -92,7 +92,7 @@ bun run test:run --coverage   # With coverage report
 
 ## Pipeline status
 
-> CI/CD badges will appear here once GitHub Actions workflows are added (Phase 3).
+[![CI](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/ci.yml)
 
 ---
 
@@ -105,7 +105,7 @@ The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each
 | 0 — Smoke test                              | ✅ Complete |
 | 1 — Source control                          | ✅ Complete |
 | 2 — Containerisation + PostgreSQL migration | ✅ Complete |
-| 3 — CI pipeline                             | Pending     |
+| 3 — CI pipeline                             | ✅ Complete |
 | 4 — Artifact registry (GHCR)                | Pending     |
 | 5 — Infrastructure as Code (Terraform)      | Pending     |
 | 6 — Deployment (Fly.io + Helm)              | Pending     |
