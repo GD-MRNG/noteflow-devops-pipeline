@@ -15,6 +15,7 @@ resource "neon_project" "this" {
   name       = "${var.app_name}-${var.environment}"
   region_id  = var.region
   pg_version = var.pg_version
+  org_id     = var.org_id
 }
 
 resource "neon_role" "app" {

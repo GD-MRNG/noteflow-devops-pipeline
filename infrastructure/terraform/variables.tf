@@ -36,6 +36,11 @@ variable "neon_pg_version" {
   default     = 16
 }
 
+variable "neon_org_id" {
+  description = "Neon organisation ID — find it at console.neon.tech → Account Settings → Organisation"
+  type        = string
+}
+
 variable "create_doppler_project" {
   description = "Create the Doppler project (true for staging workspace; set false in production workspace once staging has applied)"
   type        = bool
