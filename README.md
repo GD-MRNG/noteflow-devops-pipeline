@@ -94,6 +94,7 @@ bun run test:run --coverage   # With coverage report
 
 [![CI](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/ci.yml)
 [![Build & Push](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/build-push.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/build-push.yml)
+[![Deploy](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/deploy.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/deploy.yml)
 [![Terraform](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/terraform.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/terraform.yml)
 
 **Live staging environment:** https://noteflow-staging.fly.dev
@@ -113,7 +114,7 @@ The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each
 | 4 — Artifact registry (GHCR)                | ✅ Complete |
 | 5 — Infrastructure as Code (Terraform)      | ✅ Complete |
 | 6 — Deployment (Fly.io + Helm)              | ✅ Complete |
-| 7 — CD pipeline                             | Pending     |
+| 7 — CD pipeline                             | ✅ Complete |
 | 8 — Secrets management (Doppler)            | Pending     |
 | 9 — Observability (Grafana Cloud)           | Pending     |
 | 10 — Security pipeline                      | Pending     |
