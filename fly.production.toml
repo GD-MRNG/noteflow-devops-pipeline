@@ -1,0 +1,32 @@
+app = "noteflow-production"
+primary_region = "lax"
+
+[build]
+  image = "ghcr.io/gd-mrng/noteflow-devops-pipeline:latest"
+
+[env]
+  PORT = "3000"
+  NODE_ENV = "production"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+# Secrets (DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL) are injected
+# via `fly secrets set` — never stored in this file.
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "15s"
+    interval = "30s"
+    method = "GET"
+    path = "/api/health"
+    timeout = "5s"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
