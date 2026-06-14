@@ -94,6 +94,7 @@ bun run test:run --coverage   # With coverage report
 
 [![CI](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/ci.yml)
 [![Build & Push](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/build-push.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/build-push.yml)
+[![Terraform](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/terraform.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/terraform.yml)
 
 ---
 
@@ -108,7 +109,7 @@ The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each
 | 2 — Containerisation + PostgreSQL migration | ✅ Complete |
 | 3 — CI pipeline                             | ✅ Complete |
 | 4 — Artifact registry (GHCR)                | ✅ Complete |
-| 5 — Infrastructure as Code (Terraform)      | Pending     |
+| 5 — Infrastructure as Code (Terraform)      | ✅ Complete |
 | 6 — Deployment (Fly.io + Helm)              | Pending     |
 | 7 — CD pipeline                             | Pending     |
 | 8 — Secrets management (Doppler)            | Pending     |
@@ -122,11 +123,11 @@ The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each
 
 ## Architecture decision records
 
-Design decisions are documented in `docs/adr/` as they are made. Planned ADRs:
+Design decisions are documented in `docs/adr/` as they are made.
 
-- `001` — PostgreSQL vs SQLite
-- `002` — Fly.io vs EKS (and what changes to migrate)
-- `003` — Terraform vs CDK
-- `004` — Trunk-based development vs GitFlow
-- `005` — Monolith vs microservices
-- `006` — AI feature adoption
+- [`001`](docs/adr/001-postgresql-vs-sqlite.md) — PostgreSQL vs SQLite
+- [`002`](docs/adr/002-fly-vs-eks.md) — Fly.io vs EKS (and what changes to migrate)
+- [`003`](docs/adr/003-terraform-vs-cdk.md) — Terraform vs CDK
+- `004` — Trunk-based development vs GitFlow *(Phase 11)*
+- `005` — Monolith vs microservices *(Phase 11)*
+- `006` — AI feature adoption *(Phase 12)*

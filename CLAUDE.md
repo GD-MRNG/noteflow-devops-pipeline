@@ -104,6 +104,16 @@ Tests live in `__tests__/` mirroring the source structure. Vitest runs with the 
 
 Current coverage: 92.6% statements, 87.7% branches, 100% functions. Notable gaps: database layer (covered by integration tests in `__tests__/integration/`), server actions, and auth flows. Integration tests run against a real PostgreSQL container via `bun run test:integration`.
 
+## Infrastructure
+
+Terraform lives in `infrastructure/terraform/`. Four child modules: `database` (Neon), `fly` (Fly.io app shell), `secrets` (Doppler), `dns` (Cloudflare, disabled). Remote state is in Terraform Cloud (org: `noteflow`, workspace: `noteflow-staging`).
+
+Provider credentials are **Terraform Cloud environment variables** (sensitive): `FLY_API_TOKEN`, `NEON_API_KEY`, `DOPPLER_TOKEN`. Input variables are **Terraform variables**: `environment`, `fly_org`. Never mix categories — TF Cloud category is immutable after creation.
+
+The Cloudflare provider and `module "dns"` are commented out in `main.tf` until a Cloudflare account is configured (`enable_dns = true`).
+
+Every child module must declare its own `terraform { required_providers { ... } }` — the root's `required_providers` does not propagate to children.
+
 ## Key constraints
 
 - **Bun only** — use `bun` and `bunx`, not `npm`, `npx`, or `node`. Exception: the Docker runner stage uses `node server.js` (Next.js standalone output targets Node).
