@@ -23,7 +23,7 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to staging
-        run: fly deploy --config fly.toml --image ghcr.io/gd-mrng/noteflow-devops-pipeline:${{ steps.tag.outputs.value }}
+        run: flyctl deploy --config fly.toml --image ghcr.io/gd-mrng/noteflow-devops-pipeline:${{ steps.tag.outputs.value }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
@@ -43,6 +43,6 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to production
-        run: fly deploy --config fly.production.toml --image ghcr.io/gd-mrng/noteflow-devops-pipeline:${{ steps.tag.outputs.value }}
+        run: flyctl deploy --config fly.production.toml --image ghcr.io/gd-mrng/noteflow-devops-pipeline:${{ steps.tag.outputs.value }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
