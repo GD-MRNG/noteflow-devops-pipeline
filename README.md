@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# noteflow-devops-pipeline
 
-## Getting Started
+A note-taking app with a production-grade DevOps pipeline.
 
-First, run the development server:
+The app itself is intentionally simple — a rich-text note editor with authentication and public sharing. The engineering focus is everything around it: containerisation, CI/CD, infrastructure as code, Kubernetes, secrets management, observability, and security scanning. The app is the vehicle; the pipeline is the destination.
+
+---
+
+## What this project demonstrates
+
+| Layer                  | Technology                                       | Purpose                                                                             |
+| ---------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| Application            | Next.js 16, Bun, TypeScript, TipTap, better-auth | The thing being delivered                                                           |
+| Containerisation       | Docker (multi-stage), Docker Compose             | Reproducible local dev; portable build artifact                                     |
+| CI                     | GitHub Actions                                   | Lint → type-check → unit tests → integration tests → build on every PR              |
+| Artifact registry      | GitHub Container Registry (GHCR)                 | Versioned images tagged by git SHA                                                  |
+| Infrastructure as Code | Terraform                                        | All cloud resources declared, no manual clicking                                    |
+| Deployment             | Fly.io + Helm chart                              | Live HTTPS app; Helm chart is the AWS EKS migration path                            |
+| CD                     | GitHub Actions + GitHub Environments             | Auto-deploy to staging; manual approval gate for production                         |
+| Secrets                | Doppler                                          | Runtime secret injection; zero secrets in code or manifests                         |
+| Observability          | Grafana Cloud                                    | Structured logs (pino), Prometheus metrics, OpenTelemetry traces, SLO-backed alerts |
+| Security               | CodeQL, Trivy, Dependabot, OWASP ZAP             | SAST + image scanning + DAST + dependency updates in CI                             |
+| Reliability            | Runbooks, SLOs, chaos tests                      | Documented failure playbooks; verified recovery behaviour                           |
+
+**Total ongoing cloud cost: ~$0/month** (all free tiers). The `COST.md` file documents the AWS equivalent (~$170/month) and the exact config changes needed to migrate.
+
+---
+
+## Application features
+
+- Email/password authentication (sign up, log in, log out)
+- Create, edit, and delete rich-text notes (TipTap editor: bold, italic, headings, bullet lists, code blocks)
+- Toggle public sharing — notes get a unique `/p/<slug>` URL readable by anyone without an account
+
+---
+
+## Run locally
+
+**Prerequisites:** [Bun](https://bun.sh) and [Docker](https://www.docker.com)
+
+**Option 1 — Bun directly (SQLite, no Docker needed):**
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+git clone https://github.com/GD-MRNG/noteflow-devops-pipeline.git
+cd noteflow-devops-pipeline
+bun install
+cp .env.example .env.local   # fill in BETTER_AUTH_SECRET
+mkdir -p data
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Option 2 — Docker Compose (PostgreSQL, matches production):**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cp .env.example .env
+docker compose up
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Project structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+app/                    Next.js App Router pages and API routes
+components/             Shared React components
+lib/                    Server-side logic: DB, auth, sanitization, validation
+__tests__/              Unit and component tests (Vitest)
+infrastructure/         Terraform modules (Fly.io, Neon, Doppler, Cloudflare)
+kubernetes/helm/        Helm chart — deployable to any standard K8s cluster
+.github/workflows/      CI and CD pipelines
+docs/
+  adr/                  Architecture Decision Records
+  runbooks/             Operational playbooks
+  nextjs-explainer.md   Codebase guide for those new to Next.js/JavaScript
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Commands
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+bun dev                  # Dev server at http://localhost:3000
+bun run build            # Production build
+bun run lint             # ESLint
+bun run test:run         # Run all tests
+bun run test:run --coverage   # With coverage report
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Pipeline status
+
+> CI/CD badges will appear here once GitHub Actions workflows are added (Phase 3).
+
+---
+
+## DevOps plan
+
+The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each phase is a discrete, reviewable increment:
+
+| Phase                                       | Status      |
+| ------------------------------------------- | ----------- |
+| 0 — Smoke test                              | ✅ Complete |
+| 1 — Source control                          | ✅ Complete |
+| 2 — Containerisation + PostgreSQL migration | Pending     |
+| 3 — CI pipeline                             | Pending     |
+| 4 — Artifact registry (GHCR)                | Pending     |
+| 5 — Infrastructure as Code (Terraform)      | Pending     |
+| 6 — Deployment (Fly.io + Helm)              | Pending     |
+| 7 — CD pipeline                             | Pending     |
+| 8 — Secrets management (Doppler)            | Pending     |
+| 9 — Observability (Grafana Cloud)           | Pending     |
+| 10 — Security pipeline                      | Pending     |
+| 11 — Reliability & runbooks                 | Pending     |
+| 12 — AI summarisation feature               | Pending     |
+| 13 — Portfolio documentation                | Pending     |
+
+---
+
+## Architecture decision records
+
+Design decisions are documented in `docs/adr/` as they are made. Planned ADRs:
+
+- `001` — PostgreSQL vs SQLite
+- `002` — Fly.io vs EKS (and what changes to migrate)
+- `003` — Terraform vs CDK
+- `004` — Trunk-based development vs GitFlow
+- `005` — Monolith vs microservices
+- `006` — AI feature adoption
