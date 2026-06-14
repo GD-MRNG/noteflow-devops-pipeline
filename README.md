@@ -93,6 +93,7 @@ bun run test:run --coverage   # With coverage report
 ## Pipeline status
 
 [![CI](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/ci.yml)
+[![Build & Push](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/build-push.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/build-push.yml)
 
 ---
 
@@ -106,7 +107,7 @@ The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each
 | 1 — Source control                          | ✅ Complete |
 | 2 — Containerisation + PostgreSQL migration | ✅ Complete |
 | 3 — CI pipeline                             | ✅ Complete |
-| 4 — Artifact registry (GHCR)                | Pending     |
+| 4 — Artifact registry (GHCR)                | ✅ Complete |
 | 5 — Infrastructure as Code (Terraform)      | Pending     |
 | 6 — Deployment (Fly.io + Helm)              | Pending     |
 | 7 — CD pipeline                             | Pending     |
