@@ -120,22 +120,36 @@ Every child module must declare its own `terraform { required_providers { ... } 
 
 ## Deployment (Fly.io)
 
-The app is deployed to `https://noteflow-staging.fly.dev`. Deployment config lives in `fly.toml` (staging) and `fly.production.toml` (production, Phase 7).
+Staging is live at `https://noteflow-staging.fly.dev`; production at `https://noteflow-production.fly.dev`. Deployment config lives in `fly.toml` (staging) and `fly.production.toml` (production).
 
-**Deploy manually:**
+**Automated CD (normal path):** Merge to `main` → "Build & Push" workflow pushes a `sha-<short-sha>` image → "Deploy" workflow fires automatically → staging deploys without approval → production job waits for a manual approval click in GitHub UI (Actions → the workflow run → Review deployments).
+
+**Deploy manually (bypass CD):**
 ```bash
 fly deploy --config fly.toml
+fly deploy --config fly.production.toml
 ```
 
-**Secrets** are stored in Fly.io's vault (never in `fly.toml`). Set or update with:
+**Secrets** are stored in Fly.io's vault (never in `.toml` files). Set or update with:
 ```bash
 fly secrets set KEY=VALUE --app noteflow-staging
+fly secrets set KEY=VALUE --app noteflow-production
 fly secrets list --app noteflow-staging   # verify (values are write-only)
 ```
 
-Required secrets: `DATABASE_URL` (Neon connection string), `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL=https://noteflow-staging.fly.dev`.
+Required secrets (both apps): `DATABASE_URL` (Neon connection string), `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (app's own HTTPS URL).
 
-**Logs:** `fly logs --app noteflow-staging`
+**GitHub Secret required for CD:** `FLY_API_TOKEN` — stored in repo Settings → Secrets and variables → Actions. Generate with `fly tokens create org -o personal`.
+
+**GitHub Environments:** `staging` (no protection rules) and `production` (required reviewer = repo admin) — configured in repo Settings → Environments.
+
+**Logs:**
+```bash
+fly logs --app noteflow-staging
+fly logs --app noteflow-production
+```
+
+**Rollback:** See `docs/runbooks/rollback.md`.
 
 **Kubernetes (portfolio artifact):** A complete Helm chart lives in `kubernetes/helm/noteflow/`. It is helm-lint valid and deployable to any standard K8s cluster but is not actively run — Fly.io is the live host. See `docs/adr/002-fly-vs-eks.md` for the EKS migration path.
 
