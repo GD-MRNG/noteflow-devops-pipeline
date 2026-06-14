@@ -33,10 +33,10 @@ Requires a `.env.local` file (not committed). Minimum required vars:
 ```
 BETTER_AUTH_SECRET=<any long random string>
 BETTER_AUTH_URL=http://localhost:3000
-DB_PATH=data/app.db
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/noteflow
 ```
 
-The `data/` directory must exist before starting the server — SQLite cannot create parent directories. It is gitignored except for a `.gitkeep`.
+For local dev without Docker, start a PostgreSQL instance and run `psql $DATABASE_URL -f scripts/migrate.sql` once to apply the schema. With Docker Compose, this is handled automatically.
 
 ## Architecture
 
@@ -49,20 +49,36 @@ Every component is either a **server component** (default — runs at request ti
 ```
 Client form submit
   → actions.ts (server action)
-    → auth.api.getSession()       validates session
-    → zod schema.safeParse()      validates input shape
+    → auth.api.getSession()            validates session
+    → zod schema.safeParse()           validates input shape
     → stripHtml() / sanitizeContent()  sanitizes before DB write
-    → db.run() raw SQL            writes to SQLite
+    → pool.query() raw SQL             writes to PostgreSQL
   → redirect()
 ```
 
 ### Database
 
-`lib/db.ts` opens a single SQLite file via Bun's native driver and runs all `CREATE TABLE IF NOT EXISTS` statements on startup — there is no separate migration runner. Schema lives entirely in that file. All queries are raw SQL with parameterised values; there is no ORM. The `db` export is a module-level singleton.
+`lib/db.ts` exports a `pg.Pool` singleton (`pool`) connected via `DATABASE_URL`. All queries are raw SQL with `$1`, `$2`, ... parameterised values; there is no ORM. All DB calls are `async`. Schema lives in `scripts/migrate.sql` — it is applied once on first boot (Docker Compose `initdb.d`) or manually via `psql`.
+
+**Query pattern:**
+```ts
+// Single row
+const { rows } = await pool.query<Note>('SELECT * FROM notes WHERE id = $1', [id]);
+const note = rows[0]; // undefined if not found
+
+// All rows
+const { rows: notes } = await pool.query<Note>('SELECT ... WHERE user_id = $1', [userId]);
+
+// Write (check rowCount for updates/deletes)
+const result = await pool.query('UPDATE notes SET ... WHERE id = $1', [id]);
+if ((result.rowCount ?? 0) === 0) { /* not found */ }
+```
+
+**Type notes:** PostgreSQL BOOLEAN columns return JS `boolean`. TIMESTAMPTZ columns return JS `Date` objects (not strings).
 
 ### Authentication
 
-`lib/auth.ts` configures better-auth with the SQLite `db` singleton. Better-auth manages its own tables (`user`, `session`, `account`, `verification`). All `/api/auth/*` requests are handled by `app/api/auth/[...all]/route.ts`. Server-side session access: `auth.api.getSession({ headers: await headers() })`. Client-side: import from `lib/auth-client.ts`.
+`lib/auth.ts` configures better-auth with the `pg.Pool` instance. Better-auth manages its own tables (`user`, `session`, `account`, `verification`) — these use **camelCase column names** (`emailVerified`, `createdAt`, `userId`, etc.) because better-auth's raw `pg` adapter uses JS field names as DB column names directly (no ORM mapping). All `/api/auth/*` requests are handled by `app/api/auth/[...all]/route.ts`. Server-side session access: `auth.api.getSession({ headers: await headers() })`. Client-side: import from `lib/auth-client.ts`.
 
 ### Content sanitization
 
@@ -80,8 +96,9 @@ Current coverage: 92.6% statements, 87.7% branches, 100% functions. Notable gaps
 
 ## Key constraints
 
-- **Bun only** — use `bun` and `bunx`, not `npm`, `npx`, or `node`. Bun's SQLite driver (`bun:sqlite`) is used directly.
-- **Raw SQL** — no ORM. All queries use parameterised values (`?` placeholders).
+- **Bun only** — use `bun` and `bunx`, not `npm`, `npx`, or `node`. Exception: the Docker runner stage uses `node server.js` (Next.js standalone output targets Node).
+- **Raw SQL** — no ORM. All queries use `$1`, `$2`, ... parameterised values (PostgreSQL style).
+- **All DB calls are async** — `await pool.query(...)`. Never call `pool.query()` synchronously.
 - **No DOMPurify on the server** — server actions must use `stripHtml()` from `lib/sanitize.ts`, not `isomorphic-dompurify`.
 - **`@/` path alias** — maps to the project root. Use it for all internal imports.
-- **`data/` is gitignored** — only `data/.gitkeep` is committed. Never commit `.db` files.
+- **Schema in `scripts/migrate.sql`** — never create tables in application code. Apply the schema separately before starting the app.

@@ -2,7 +2,7 @@ import { redirect, notFound } from 'next/navigation';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
-import { db } from '@/lib/db';
+import { pool } from '@/lib/db';
 import { TiptapRenderer } from '@/components/tiptap-renderer';
 import { ShareToggle } from '@/components/share-toggle';
 import { NoteActions } from './note-actions';
@@ -14,10 +14,10 @@ interface Note {
   user_id: string;
   title: string;
   content_json: string;
-  is_public: number;
+  is_public: boolean;
   public_slug: string | null;
-  created_at: string;
-  updated_at: string;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export default async function NoteViewer({ params }: { params: Params }) {
@@ -31,10 +31,11 @@ export default async function NoteViewer({ params }: { params: Params }) {
 
   const { id } = await params;
 
-  // Ownership check: only note owner can view
-  const note = db
-    .query<Note, [string, string]>('SELECT * FROM notes WHERE id = ? AND user_id = ?')
-    .get(id, session.user.id);
+  const { rows } = await pool.query<Note>('SELECT * FROM notes WHERE id = $1 AND user_id = $2', [
+    id,
+    session.user.id,
+  ]);
+  const note = rows[0];
 
   if (!note) {
     notFound();
@@ -52,7 +53,7 @@ export default async function NoteViewer({ params }: { params: Params }) {
           <NoteActions noteId={note.id} />
         </div>
         <div className='flex items-center gap-4 text-sm text-foreground/60'>
-          <span>Updated: {new Date(note.updated_at).toLocaleDateString()}</span>
+          <span>Updated: {note.updated_at.toLocaleDateString()}</span>
           <span
             className={note.is_public ? 'text-green-600 dark:text-green-400' : 'text-foreground/40'}
           >
@@ -67,7 +68,7 @@ export default async function NoteViewer({ params }: { params: Params }) {
 
       <ShareToggle
         noteId={note.id}
-        initialIsPublic={note.is_public === 1}
+        initialIsPublic={note.is_public}
         initialSlug={note.public_slug}
       />
     </div>

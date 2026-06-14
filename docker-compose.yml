@@ -1,0 +1,33 @@
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/noteflow
+      BETTER_AUTH_SECRET: dev-secret-replace-in-production
+      BETTER_AUTH_URL: http://localhost:3000
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: noteflow
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/migrate.sql:/docker-entrypoint-initdb.d/01-migrate.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d noteflow']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { nanoid } from 'nanoid';
 import { auth } from '@/lib/auth';
-import { db } from '@/lib/db';
+import { pool } from '@/lib/db';
 import { toggleSharingSchema } from '@/lib/validation';
 
 export async function deleteNote(formData: FormData): Promise<void> {
@@ -21,7 +21,7 @@ export async function deleteNote(formData: FormData): Promise<void> {
     return;
   }
 
-  db.run('DELETE FROM notes WHERE id = ? AND user_id = ?', [noteId, session.user.id]);
+  await pool.query('DELETE FROM notes WHERE id = $1 AND user_id = $2', [noteId, session.user.id]);
 
   redirect('/dashboard');
 }
@@ -57,11 +57,11 @@ export async function toggleSharing(
   const { noteId, enable } = parsed.data;
 
   // Verify ownership
-  const note = db
-    .query<{ id: string; public_slug: string | null }, [string, string]>(
-      'SELECT id, public_slug FROM notes WHERE id = ? AND user_id = ?',
-    )
-    .get(noteId, session.user.id);
+  const { rows } = await pool.query<{ id: string; public_slug: string | null }>(
+    'SELECT id, public_slug FROM notes WHERE id = $1 AND user_id = $2',
+    [noteId, session.user.id],
+  );
+  const note = rows[0];
 
   if (!note) {
     return { success: false, error: 'Note not found' };
@@ -71,11 +71,14 @@ export async function toggleSharing(
 
   if (enable && !slug) {
     slug = nanoid(16);
-    db.run('UPDATE notes SET is_public = 1, public_slug = ? WHERE id = ?', [slug, noteId]);
+    await pool.query('UPDATE notes SET is_public = TRUE, public_slug = $1 WHERE id = $2', [
+      slug,
+      noteId,
+    ]);
   } else if (enable) {
-    db.run('UPDATE notes SET is_public = 1 WHERE id = ?', [noteId]);
+    await pool.query('UPDATE notes SET is_public = TRUE WHERE id = $1', [noteId]);
   } else {
-    db.run('UPDATE notes SET is_public = 0 WHERE id = ?', [noteId]);
+    await pool.query('UPDATE notes SET is_public = FALSE WHERE id = $1', [noteId]);
   }
 
   return { success: true, isPublic: enable, slug };
