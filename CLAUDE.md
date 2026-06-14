@@ -14,10 +14,11 @@ bun run build        # Production build
 bun start            # Serve production build
 bun run lint         # ESLint (must pass before committing)
 bun run format       # oxfmt formatter
-bun run test:run     # Run all tests once
+bun run test:run     # Run unit/component tests once (excludes integration tests)
 bun run test         # Watch mode
 bun run test:run --coverage          # With coverage report
 bun run test:run __tests__/lib/sanitize.test.ts  # Run a single test file
+DATABASE_URL=<url> bun run test:integration  # Integration tests (require postgres)
 ```
 
 TypeScript type-check (no emit):
@@ -25,6 +26,15 @@ TypeScript type-check (no emit):
 ```bash
 bunx tsc --noEmit
 ```
+
+## Testing
+
+Two separate Vitest configs:
+
+- **`vitest.config.mts`** — unit + component tests, `jsdom` environment, no DB required. Excludes `__tests__/integration/`.
+- **`vitest.config.integration.mts`** — integration tests, `node` environment, requires `DATABASE_URL`. Global setup applies `scripts/migrate.sql` via `psql` before the suite runs.
+
+Integration tests live in `__tests__/integration/` and test the DB layer directly via `pool.query()`. They are run separately in CI after the postgres service container is healthy.
 
 ## Environment
 
