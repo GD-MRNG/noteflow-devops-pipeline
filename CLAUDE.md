@@ -108,11 +108,15 @@ Current coverage: 92.6% statements, 87.7% branches, 100% functions. Notable gaps
 
 Terraform lives in `infrastructure/terraform/`. Four child modules: `database` (Neon), `fly` (Fly.io app shell), `secrets` (Doppler), `dns` (Cloudflare, disabled). Remote state is in Terraform Cloud (org: `noteflow`, workspace: `noteflow-staging`).
 
-Provider credentials are **Terraform Cloud environment variables** (sensitive): `FLY_API_TOKEN`, `NEON_API_KEY`, `DOPPLER_TOKEN`. Input variables are **Terraform variables**: `environment`, `fly_org`. Never mix categories — TF Cloud category is immutable after creation.
+Provider credentials are **Terraform Cloud environment variables** (sensitive): `FLY_API_TOKEN`, `NEON_API_KEY`, `DOPPLER_TOKEN`. Input variables are **Terraform variables**: `environment`, `fly_org`, `neon_org_id`. Never mix categories — TF Cloud category is immutable after creation.
 
 The Cloudflare provider and `module "dns"` are commented out in `main.tf` until a Cloudflare account is configured (`enable_dns = true`).
 
 Every child module must declare its own `terraform { required_providers { ... } }` — the root's `required_providers` does not propagate to children.
+
+**Neon free tier constraints:** `history_retention_seconds` must be ≤ 21600 (6 hours) — set explicitly, provider default of 86400 exceeds the limit. `org_id` is required on `neon_project` in provider v0.13.0+; find it at Neon console → Account Settings → Organisation.
+
+**Live resource IDs (staging):** Neon project `young-river-02207257`, Fly.io app `noteflow-staging`, Doppler project `noteflow`.
 
 ## Key constraints
 
