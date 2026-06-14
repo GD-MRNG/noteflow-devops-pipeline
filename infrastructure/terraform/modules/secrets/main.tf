@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    doppler = {
+      source  = "DopplerHQ/doppler"
+      version = "~> 1.3"
+    }
+  }
+}
+
 # Doppler project and environment structure.
 # The project is shared across environments; each workspace creates its own environment slug.
 #

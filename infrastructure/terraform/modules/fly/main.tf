@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    fly = {
+      source  = "fly-apps/fly"
+      version = "~> 0.0.23"
+    }
+  }
+}
+
 # Fly.io app shell — registers the app and reserves the name.
 # No machines are created here; fly deploy (Phase 6) provisions machines from fly.toml.
 #

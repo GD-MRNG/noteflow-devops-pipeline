@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    neon = {
+      source  = "kislerdm/neon"
+      version = "~> 0.2"
+    }
+  }
+}
+
 # Neon serverless PostgreSQL — one project per environment.
 # Each project gets its own compute, storage, and connection string.
 # Staging and production are completely isolated at the project level.
