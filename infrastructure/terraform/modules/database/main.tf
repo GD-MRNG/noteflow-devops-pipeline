@@ -12,10 +12,11 @@ terraform {
 # Staging and production are completely isolated at the project level.
 
 resource "neon_project" "this" {
-  name       = "${var.app_name}-${var.environment}"
-  region_id  = var.region
-  pg_version = var.pg_version
-  org_id     = var.org_id
+  name                      = "${var.app_name}-${var.environment}"
+  region_id                 = var.region
+  pg_version                = var.pg_version
+  org_id                    = var.org_id
+  history_retention_seconds = 21600  # free tier max (6 hours)
 }
 
 resource "neon_role" "app" {
