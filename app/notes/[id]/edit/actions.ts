@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
-import { db } from '@/lib/db';
+import { pool } from '@/lib/db';
 import { sanitizeContent, stripHtml } from '@/lib/sanitize';
 import { updateNoteSchema } from '@/lib/validation';
 
@@ -41,12 +41,12 @@ export async function updateNote(formData: FormData): Promise<ActionResult> {
   const sanitizedContent = sanitizeContent(content_json);
 
   try {
-    const changes = db.run(
-      'UPDATE notes SET title = ?, content_json = ? WHERE id = ? AND user_id = ?',
+    const result = await pool.query(
+      'UPDATE notes SET title = $1, content_json = $2 WHERE id = $3 AND user_id = $4',
       [sanitizedTitle, sanitizedContent, id, session.user.id],
     );
 
-    if (changes.changes === 0) {
+    if ((result.rowCount ?? 0) === 0) {
       return { error: { general: 'Note not found or access denied.' } };
     }
   } catch {

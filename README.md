@@ -36,26 +36,26 @@ The app itself is intentionally simple — a rich-text note editor with authenti
 
 ## Run locally
 
-**Prerequisites:** [Bun](https://bun.sh) and [Docker](https://www.docker.com)
+**Prerequisites:** [Docker](https://www.docker.com) (includes PostgreSQL — no separate install needed)
 
-**Option 1 — Bun directly (SQLite, no Docker needed):**
+**Option 1 — Docker Compose (recommended, matches production):**
 
 ```bash
 git clone https://github.com/GD-MRNG/noteflow-devops-pipeline.git
 cd noteflow-devops-pipeline
-bun install
-cp .env.example .env.local   # fill in BETTER_AUTH_SECRET
-mkdir -p data
-bun dev
+docker compose up
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). The database schema is applied automatically on first boot.
 
-**Option 2 — Docker Compose (PostgreSQL, matches production):**
+**Option 2 — Bun dev server (requires a local PostgreSQL instance):**
 
 ```bash
-cp .env.example .env
-docker compose up
+bun install
+cp .env.example .env.local   # fill in BETTER_AUTH_SECRET and DATABASE_URL
+# Apply schema to your local postgres:
+psql $DATABASE_URL -f scripts/migrate.sql
+bun dev
 ```
 
 ---
@@ -104,7 +104,7 @@ The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each
 | ------------------------------------------- | ----------- |
 | 0 — Smoke test                              | ✅ Complete |
 | 1 — Source control                          | ✅ Complete |
-| 2 — Containerisation + PostgreSQL migration | Pending     |
+| 2 — Containerisation + PostgreSQL migration | ✅ Complete |
 | 3 — CI pipeline                             | Pending     |
 | 4 — Artifact registry (GHCR)                | Pending     |
 | 5 — Infrastructure as Code (Terraform)      | Pending     |

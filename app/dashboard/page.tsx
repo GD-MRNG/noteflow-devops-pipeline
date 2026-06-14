@@ -2,13 +2,13 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
-import { db } from '@/lib/db';
+import { pool } from '@/lib/db';
 
 interface Note {
   id: string;
   title: string;
-  is_public: number;
-  updated_at: string;
+  is_public: boolean;
+  updated_at: Date;
 }
 
 export default async function Dashboard() {
@@ -20,11 +20,10 @@ export default async function Dashboard() {
     redirect('/authenticate');
   }
 
-  const notes = db
-    .query<Note, [string]>(
-      'SELECT id, title, is_public, updated_at FROM notes WHERE user_id = ? ORDER BY updated_at DESC',
-    )
-    .all(session.user.id);
+  const { rows: notes } = await pool.query<Note>(
+    'SELECT id, title, is_public, updated_at FROM notes WHERE user_id = $1 ORDER BY updated_at DESC',
+    [session.user.id],
+  );
 
   return (
     <div className='p-8'>
@@ -50,7 +49,7 @@ export default async function Dashboard() {
             >
               <h2 className='font-semibold mb-2 truncate'>{note.title}</h2>
               <div className='flex items-center justify-between text-sm text-foreground/60'>
-                <span>{new Date(note.updated_at).toLocaleDateString()}</span>
+                <span>{note.updated_at.toLocaleDateString()}</span>
                 <span
                   className={
                     note.is_public ? 'text-green-600 dark:text-green-400' : 'text-foreground/40'

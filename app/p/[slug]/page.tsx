@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { db } from '@/lib/db';
+import { pool } from '@/lib/db';
 import { TiptapRenderer } from '@/components/tiptap-renderer';
 
 type Params = Promise<{ slug: string }>;
@@ -12,11 +12,11 @@ interface PublicNote {
 export default async function PublicNotePage({ params }: { params: Params }) {
   const { slug } = await params;
 
-  const note = db
-    .query<PublicNote, [string]>(
-      'SELECT title, content_json FROM notes WHERE public_slug = ? AND is_public = 1',
-    )
-    .get(slug);
+  const { rows } = await pool.query<PublicNote>(
+    'SELECT title, content_json FROM notes WHERE public_slug = $1 AND is_public = TRUE',
+    [slug],
+  );
+  const note = rows[0];
 
   if (!note) {
     notFound();

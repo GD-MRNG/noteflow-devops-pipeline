@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
-import { db } from '@/lib/db';
+import { pool } from '@/lib/db';
 import { sanitizeContent, stripHtml } from '@/lib/sanitize';
 import { createNoteSchema } from '@/lib/validation';
 
@@ -40,12 +40,10 @@ export async function createNote(formData: FormData): Promise<ActionResult> {
   const id = crypto.randomUUID();
 
   try {
-    db.run(`INSERT INTO notes (id, user_id, title, content_json) VALUES (?, ?, ?, ?)`, [
-      id,
-      session.user.id,
-      sanitizedTitle,
-      sanitizedContent,
-    ]);
+    await pool.query(
+      'INSERT INTO notes (id, user_id, title, content_json) VALUES ($1, $2, $3, $4)',
+      [id, session.user.id, sanitizedTitle, sanitizedContent],
+    );
   } catch {
     return { error: { general: 'Failed to create note. Please try again.' } };
   }

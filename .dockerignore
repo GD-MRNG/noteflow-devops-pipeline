@@ -1,0 +1,16 @@
+node_modules/
+.next/
+data/
+.env
+.env.local
+.env.*.local
+.git/
+.gitignore
+README.md
+CLAUDE.md
+docs/
+devops_project_spec/
+temp/
+__tests__/
+*.test.ts
+*.test.tsx

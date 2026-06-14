@@ -2,7 +2,7 @@ import { redirect, notFound } from 'next/navigation';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
-import { db } from '@/lib/db';
+import { pool } from '@/lib/db';
 import { EditNoteForm } from './edit-note-form';
 
 type Params = Promise<{ id: string }>;
@@ -25,11 +25,11 @@ export default async function EditNotePage({ params }: { params: Params }) {
 
   const { id } = await params;
 
-  const note = db
-    .query<Note, [string, string]>(
-      'SELECT id, user_id, title, content_json FROM notes WHERE id = ? AND user_id = ?',
-    )
-    .get(id, session.user.id);
+  const { rows } = await pool.query<Note>(
+    'SELECT id, user_id, title, content_json FROM notes WHERE id = $1 AND user_id = $2',
+    [id, session.user.id],
+  );
+  const note = rows[0];
 
   if (!note) {
     notFound();
