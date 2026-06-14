@@ -9,7 +9,8 @@
     "lint": "eslint",
     "format": "oxfmt",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "test:integration": "vitest run --config vitest.config.integration.mts"
   },
   "dependencies": {
     "@tiptap/pm": "^3.15.3",
