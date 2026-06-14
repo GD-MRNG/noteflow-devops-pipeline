@@ -102,7 +102,7 @@ Notes are stored as `JSON.stringify(editor.getJSON())` — a TipTap document JSO
 
 Tests live in `__tests__/` mirroring the source structure. Vitest runs with the `jsdom` environment for component tests. The `@/*` path alias works in tests via `vite-tsconfig-paths`.
 
-Current coverage: 92.6% statements, 87.7% branches, 100% functions. Notable gaps: database layer, server actions, and auth flows have no tests yet — these are addressed in Phase 3 (integration tests against a real PostgreSQL container).
+Current coverage: 92.6% statements, 87.7% branches, 100% functions. Notable gaps: database layer (covered by integration tests in `__tests__/integration/`), server actions, and auth flows. Integration tests run against a real PostgreSQL container via `bun run test:integration`.
 
 ## Key constraints
 
