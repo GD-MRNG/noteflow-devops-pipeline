@@ -1,0 +1,61 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/gd-mrng/noteflow-devops-pipeline
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: ghcr-credentials
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  host: noteflow.example.com
+  tls:
+    secretName: noteflow-tls
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+env:
+  NODE_ENV: production
+  PORT: "3000"
+  NEXT_TELEMETRY_DISABLED: "1"
+
+# Name of a pre-existing Kubernetes Secret containing:
+#   DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL
+# Create it with: kubectl create secret generic noteflow-secrets --from-env-file=.env
+# Or manage it via External Secrets Operator pointing at Doppler.
+existingSecret: noteflow-secrets
+
+probes:
+  liveness:
+    path: /api/health
+    initialDelaySeconds: 15
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readiness:
+    path: /api/health
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 3
+    failureThreshold: 3

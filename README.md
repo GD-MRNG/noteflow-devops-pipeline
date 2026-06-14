@@ -96,6 +96,8 @@ bun run test:run --coverage   # With coverage report
 [![Build & Push](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/build-push.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/build-push.yml)
 [![Terraform](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/terraform.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/terraform.yml)
 
+**Live staging environment:** https://noteflow-staging.fly.dev
+
 ---
 
 ## DevOps plan
@@ -110,7 +112,7 @@ The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each
 | 3 — CI pipeline                             | ✅ Complete |
 | 4 — Artifact registry (GHCR)                | ✅ Complete |
 | 5 — Infrastructure as Code (Terraform)      | ✅ Complete |
-| 6 — Deployment (Fly.io + Helm)              | Pending     |
+| 6 — Deployment (Fly.io + Helm)              | ✅ Complete |
 | 7 — CD pipeline                             | Pending     |
 | 8 — Secrets management (Doppler)            | Pending     |
 | 9 — Observability (Grafana Cloud)           | Pending     |

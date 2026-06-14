@@ -118,6 +118,29 @@ Every child module must declare its own `terraform { required_providers { ... } 
 
 **Live resource IDs (staging):** Neon project `young-river-02207257`, Fly.io app `noteflow-staging`, Doppler project `noteflow`.
 
+## Deployment (Fly.io)
+
+The app is deployed to `https://noteflow-staging.fly.dev`. Deployment config lives in `fly.toml` (staging) and `fly.production.toml` (production, Phase 7).
+
+**Deploy manually:**
+```bash
+fly deploy --config fly.toml
+```
+
+**Secrets** are stored in Fly.io's vault (never in `fly.toml`). Set or update with:
+```bash
+fly secrets set KEY=VALUE --app noteflow-staging
+fly secrets list --app noteflow-staging   # verify (values are write-only)
+```
+
+Required secrets: `DATABASE_URL` (Neon connection string), `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL=https://noteflow-staging.fly.dev`.
+
+**Logs:** `fly logs --app noteflow-staging`
+
+**Kubernetes (portfolio artifact):** A complete Helm chart lives in `kubernetes/helm/noteflow/`. It is helm-lint valid and deployable to any standard K8s cluster but is not actively run — Fly.io is the live host. See `docs/adr/002-fly-vs-eks.md` for the EKS migration path.
+
+`helm lint kubernetes/helm/noteflow/` — validates the chart locally (requires Helm installed).
+
 ## Key constraints
 
 - **Bun only** — use `bun` and `bunx`, not `npm`, `npx`, or `node`. Exception: the Docker runner stage uses `node server.js` (Next.js standalone output targets Node).
