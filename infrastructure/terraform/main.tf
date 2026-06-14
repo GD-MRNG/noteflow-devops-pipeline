@@ -14,16 +14,12 @@ terraform {
       source  = "DopplerHQ/doppler"
       version = "~> 1.3"
     }
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "~> 4.0"
-    }
   }
 }
 
 # Provider credentials are injected as workspace variables in Terraform Cloud.
-# FLY_API_TOKEN, NEON_API_KEY, DOPPLER_TOKEN, CLOUDFLARE_API_TOKEN
-# are all sensitive workspace variables — never stored in this file or GitHub Secrets.
+# FLY_API_TOKEN, NEON_API_KEY, DOPPLER_TOKEN are sensitive environment variables.
+# Cloudflare (DNS) is wired in when enable_dns = true — add cloudflare provider then.
 
 module "database" {
   source      = "./modules/database"
@@ -48,11 +44,15 @@ module "secrets" {
   create_doppler_project = var.create_doppler_project
 }
 
-module "dns" {
-  source        = "./modules/dns"
-  count         = var.enable_dns ? 1 : 0
-  app_name      = var.app_name
-  fly_hostname  = module.fly.app_hostname
-  zone_id       = var.cloudflare_zone_id
-  custom_domain = var.custom_domain
-}
+# DNS module (Cloudflare) is not wired up until enable_dns = true.
+# To activate: add cloudflare provider to required_providers, add CLOUDFLARE_API_TOKEN
+# to TF Cloud env vars, then uncomment the block below.
+#
+# module "dns" {
+#   source        = "./modules/dns"
+#   count         = var.enable_dns ? 1 : 0
+#   app_name      = var.app_name
+#   fly_hostname  = module.fly.app_hostname
+#   zone_id       = var.cloudflare_zone_id
+#   custom_domain = var.custom_domain
+# }
