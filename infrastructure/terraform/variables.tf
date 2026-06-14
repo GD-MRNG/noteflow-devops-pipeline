@@ -1,5 +1,5 @@
 variable "environment" {
-  description = "Deployment environment (staging or production)"
+  description = "staging"
   type        = string
   validation {
     condition     = contains(["staging", "production"], var.environment)
@@ -14,7 +14,7 @@ variable "app_name" {
 }
 
 variable "fly_org" {
-  description = "Fly.io organisation slug (find with: fly orgs list)"
+  description = "personal"
   type        = string
 }
 
