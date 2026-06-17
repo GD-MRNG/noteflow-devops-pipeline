@@ -6,6 +6,8 @@ import { nanoid } from 'nanoid';
 import { auth } from '@/lib/auth';
 import { pool } from '@/lib/db';
 import { toggleSharingSchema } from '@/lib/validation';
+import { logger } from '@/lib/logger';
+import { noteOperationsTotal } from '@/lib/metrics';
 
 export async function deleteNote(formData: FormData): Promise<void> {
   const session = await auth.api.getSession({
@@ -22,6 +24,8 @@ export async function deleteNote(formData: FormData): Promise<void> {
   }
 
   await pool.query('DELETE FROM notes WHERE id = $1 AND user_id = $2', [noteId, session.user.id]);
+  noteOperationsTotal.inc({ operation: 'delete' });
+  logger.info({ noteId, userId: session.user.id }, 'note deleted');
 
   redirect('/dashboard');
 }
@@ -81,5 +85,6 @@ export async function toggleSharing(
     await pool.query('UPDATE notes SET is_public = FALSE WHERE id = $1', [noteId]);
   }
 
+  logger.info({ noteId, userId: session.user.id, isPublic: enable }, 'note sharing toggled');
   return { success: true, isPublic: enable, slug };
 }

@@ -6,6 +6,8 @@ import { auth } from '@/lib/auth';
 import { pool } from '@/lib/db';
 import { sanitizeContent, stripHtml } from '@/lib/sanitize';
 import { updateNoteSchema } from '@/lib/validation';
+import { logger } from '@/lib/logger';
+import { noteOperationsTotal } from '@/lib/metrics';
 
 export type ActionResult = {
   success?: boolean;
@@ -49,7 +51,11 @@ export async function updateNote(formData: FormData): Promise<ActionResult> {
     if ((result.rowCount ?? 0) === 0) {
       return { error: { general: 'Note not found or access denied.' } };
     }
-  } catch {
+
+    noteOperationsTotal.inc({ operation: 'update' });
+    logger.info({ noteId: id, userId: session.user.id }, 'note updated');
+  } catch (err) {
+    logger.error({ err, noteId: id, userId: session.user.id }, 'failed to update note');
     return { error: { general: 'Failed to update note. Please try again.' } };
   }
 
