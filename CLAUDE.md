@@ -130,16 +130,13 @@ fly deploy --config fly.toml
 fly deploy --config fly.production.toml
 ```
 
-**Secrets** are stored in Fly.io's vault (never in `.toml` files). Set or update with:
-```bash
-fly secrets set KEY=VALUE --app noteflow-staging
-fly secrets set KEY=VALUE --app noteflow-production
-fly secrets list --app noteflow-staging   # verify (values are write-only)
-```
+**Secrets** are managed by Doppler (project `noteflow`, configs `staging` and `production`). Doppler syncs automatically to the Fly.io vault — do not use `fly secrets set` directly for app secrets, or the Doppler sync will overwrite the change on the next sync.
 
-Required secrets (both apps): `DATABASE_URL` (Neon connection string), `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (app's own HTTPS URL).
+To rotate a secret: update the value in the Doppler dashboard → sync fires automatically → redeploy the app to pick up the new value. See `docs/runbooks/secret-rotation.md`.
 
-**GitHub Secret required for CD:** `FLY_API_TOKEN` — stored in repo Settings → Secrets and variables → Actions. Generate with `fly tokens create org -o personal`.
+Required secrets in Doppler (both configs): `DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `FLY_API_TOKEN`, `TF_API_TOKEN`.
+
+**GitHub Secrets required for CD:** `DOPPLER_TOKEN_STAGING` and `DOPPLER_TOKEN_PRODUCTION` — Doppler service tokens scoped to their respective configs. These are the only GitHub Secrets; all other credentials flow from Doppler at runtime.
 
 **GitHub Environments:** `staging` (no protection rules) and `production` (required reviewer = repo admin) — configured in repo Settings → Environments.
 

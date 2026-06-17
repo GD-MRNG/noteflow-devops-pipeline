@@ -115,7 +115,7 @@ The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each
 | 5 — Infrastructure as Code (Terraform)      | ✅ Complete |
 | 6 — Deployment (Fly.io + Helm)              | ✅ Complete |
 | 7 — CD pipeline                             | ✅ Complete |
-| 8 — Secrets management (Doppler)            | Pending     |
+| 8 — Secrets management (Doppler)            | ✅ Complete |
 | 9 — Observability (Grafana Cloud)           | Pending     |
 | 10 — Security pipeline                      | Pending     |
 | 11 — Reliability & runbooks                 | Pending     |
