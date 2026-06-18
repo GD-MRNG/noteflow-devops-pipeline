@@ -1,0 +1,28 @@
+// Scrape Prometheus metrics from both noteflow environments
+prometheus.scrape "noteflow_staging" {
+  targets = [{"__address__" = "noteflow-staging.fly.dev", "__scheme__" = "https"}]
+  metrics_path    = "/api/metrics"
+  scrape_interval = "60s"
+
+  forward_to = [prometheus.remote_write.grafana.receiver]
+}
+
+prometheus.scrape "noteflow_production" {
+  targets = [{"__address__" = "noteflow-production.fly.dev", "__scheme__" = "https"}]
+  metrics_path    = "/api/metrics"
+  scrape_interval = "60s"
+
+  forward_to = [prometheus.remote_write.grafana.receiver]
+}
+
+// Remote-write to Grafana Cloud Prometheus
+prometheus.remote_write "grafana" {
+  endpoint {
+    url = env("GRAFANA_METRICS_URL")
+
+    basic_auth {
+      username = env("GRAFANA_METRICS_USER")
+      password = env("GRAFANA_METRICS_PASSWORD")
+    }
+  }
+}

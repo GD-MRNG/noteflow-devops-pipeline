@@ -1,0 +1,14 @@
+app = "noteflow-log-shipper"
+primary_region = "lax"
+
+[build]
+  image = "ghcr.io/superfly/fly-log-shipper:latest"
+
+[env]
+  ORG = "personal"
+  LOKI_LABELS = "source=fly,app=noteflow"
+
+[[vm]]
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1
