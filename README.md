@@ -18,7 +18,7 @@ The app itself is intentionally simple — a rich-text note editor with authenti
 | Deployment             | Fly.io + Helm chart                              | Live HTTPS app; Helm chart is the AWS EKS migration path                            |
 | CD                     | GitHub Actions + GitHub Environments             | Auto-deploy to staging; manual approval gate for production                         |
 | Secrets                | Doppler                                          | Runtime secret injection; zero secrets in code or manifests                         |
-| Observability          | Grafana Cloud                                    | Structured logs (pino), Prometheus metrics, OpenTelemetry traces, SLO-backed alerts |
+| Observability          | Grafana Cloud (Loki, Tempo, Prometheus)          | Structured pino logs → Loki; prom-client metrics → Alloy → Prometheus; OTel traces → Tempo |
 | Security               | CodeQL, Trivy, Dependabot, OWASP ZAP             | SAST + image scanning + DAST + dependency updates in CI                             |
 | Reliability            | Runbooks, SLOs, chaos tests                      | Documented failure playbooks; verified recovery behaviour                           |
 
@@ -97,7 +97,9 @@ bun run test:run --coverage   # With coverage report
 [![Deploy](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/deploy.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/deploy.yml)
 [![Terraform](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/terraform.yml/badge.svg)](https://github.com/GD-MRNG/noteflow-devops-pipeline/actions/workflows/terraform.yml)
 
-**Live staging environment:** https://noteflow-staging.fly.dev
+**Live environments:**
+- Staging: https://noteflow-staging.fly.dev
+- Production: https://noteflow-production.fly.dev
 
 ---
 
@@ -116,7 +118,7 @@ The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each
 | 6 — Deployment (Fly.io + Helm)              | ✅ Complete |
 | 7 — CD pipeline                             | ✅ Complete |
 | 8 — Secrets management (Doppler)            | ✅ Complete |
-| 9 — Observability (Grafana Cloud)           | Pending     |
+| 9 — Observability (Grafana Cloud)           | ✅ Complete |
 | 10 — Security pipeline                      | Pending     |
 | 11 — Reliability & runbooks                 | Pending     |
 | 12 — AI summarisation feature               | Pending     |
