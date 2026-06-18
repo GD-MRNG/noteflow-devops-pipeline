@@ -1,3 +1,3 @@
 FROM grafana/alloy:latest
-COPY config.alloy /etc/alloy/config.alloy
+COPY alloy/config.alloy /etc/alloy/config.alloy
 EXPOSE 12345
