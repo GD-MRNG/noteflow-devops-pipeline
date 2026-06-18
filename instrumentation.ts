@@ -6,16 +6,10 @@ export async function register() {
       '@opentelemetry/auto-instrumentations-node'
     );
 
+    // OTLPTraceExporter reads OTEL_EXPORTER_OTLP_ENDPOINT (appends /v1/traces) and
+    // OTEL_EXPORTER_OTLP_HEADERS from env automatically, with correct base64-safe parsing.
     const sdk = new NodeSDK({
-      traceExporter: new OTLPTraceExporter({
-        url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
-        headers: Object.fromEntries(
-          (process.env.OTEL_EXPORTER_OTLP_HEADERS ?? '')
-            .split(',')
-            .filter(Boolean)
-            .map((h) => h.split('=', 2) as [string, string]),
-        ),
-      }),
+      traceExporter: new OTLPTraceExporter(),
       instrumentations: [getNodeAutoInstrumentations()],
     });
 
