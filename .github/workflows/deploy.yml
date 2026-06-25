@@ -20,7 +20,7 @@ jobs:
         run: echo "value=sha-$(echo '${{ github.event.workflow_run.head_sha }}' | cut -c1-7)" >> $GITHUB_OUTPUT
 
       - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@v3
+        uses: dopplerhq/cli-action@v4
 
       - name: Install flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
@@ -53,7 +53,7 @@ jobs:
         run: echo "value=sha-$(echo '${{ github.event.workflow_run.head_sha }}' | cut -c1-7)" >> $GITHUB_OUTPUT
 
       - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@v3
+        uses: dopplerhq/cli-action@v4
 
       - name: Install flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master

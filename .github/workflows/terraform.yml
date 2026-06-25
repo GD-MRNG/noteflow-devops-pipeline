@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@v3
+        uses: dopplerhq/cli-action@v4
 
       - name: Inject secrets from Doppler
         run: doppler secrets download --token "${{ secrets.DOPPLER_TOKEN_STAGING }}" --project noteflow --config staging --no-file --format env >> $GITHUB_ENV
@@ -138,7 +138,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@v3
+        uses: dopplerhq/cli-action@v4
 
       - name: Inject secrets from Doppler
         run: doppler secrets download --token "${{ secrets.DOPPLER_TOKEN_STAGING }}" --project noteflow --config staging --no-file --format env >> $GITHUB_ENV
