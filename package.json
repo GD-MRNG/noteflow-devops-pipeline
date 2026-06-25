@@ -48,7 +48,7 @@
     "jsdom": "^27.4.0",
     "oxfmt": "^0.26.0",
     "tailwindcss": "^4",
-    "typescript": "^5",
+    "typescript": "^6",
     "vite-tsconfig-paths": "^6.0.4",
     "vitest": "^4.0.17"
   },
