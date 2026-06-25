@@ -46,7 +46,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "jsdom": "^27.4.0",
-    "oxfmt": "^0.26.0",
+    "oxfmt": "^0.56.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.0.4",
