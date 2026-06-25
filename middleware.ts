@@ -22,12 +22,13 @@ export function middleware(request: NextRequest) {
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
   response.headers.set('Content-Security-Policy', CSP)
+  response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp')
 
   return response
 }
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|api/metrics).*)',
+    '/((?!api/metrics).*)',
   ],
 }
