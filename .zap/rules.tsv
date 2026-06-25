@@ -1,0 +1,5 @@
+10055	IGNORE	(CSP unsafe-eval required by Next.js App Router hydration — documented in THREAT_MODEL.md)
+10044	IGNORE	(307 redirect on /dashboard is expected auth behaviour — unauthenticated users redirected to /authenticate)
+10049	IGNORE	(Non-storable content expected for a dynamic authenticated app)
+10109	IGNORE	(Modern Web Application — informational, not a vulnerability)
+10036	IGNORE	(Server version header set by Fly.io proxy — not controllable from the application)

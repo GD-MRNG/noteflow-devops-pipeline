@@ -39,6 +39,7 @@ jobs:
           target: https://noteflow-staging.fly.dev
           fail_action: true
           artifact_name: zap-report
+          rules_file_name: .zap/rules.tsv
 
   deploy-production:
     needs: zap-scan
