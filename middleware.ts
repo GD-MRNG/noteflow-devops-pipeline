@@ -24,6 +24,7 @@ export function middleware(request: NextRequest) {
   response.headers.set('Content-Security-Policy', CSP)
   response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp')
   response.headers.set('Cross-Origin-Opener-Policy', 'same-origin')
+  response.headers.set('Cross-Origin-Resource-Policy', 'same-origin')
 
   return response
 }
