@@ -136,3 +136,13 @@ Design decisions are documented in `docs/adr/` as they are made.
 - `004` — Trunk-based development vs GitFlow *(Phase 11)*
 - `005` — Monolith vs microservices *(Phase 11)*
 - `006` — AI feature adoption *(Phase 12)*
+
+---
+
+## Runbooks
+
+Operational playbooks for common scenarios:
+
+- [`emergency-shutdown.md`](docs/runbooks/emergency-shutdown.md) — Kill switch: take staging and/or production offline immediately (DDoS, abuse)
+- [`rollback.md`](docs/runbooks/rollback.md) — Revert to a previous image after a bad deploy
+- [`secret-rotation.md`](docs/runbooks/secret-rotation.md) — Rotate any secret via Doppler without downtime
