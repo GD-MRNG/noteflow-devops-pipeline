@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Trivy IaC scan
         uses: aquasecurity/trivy-action@v0.36.0
@@ -44,7 +44,7 @@ jobs:
         working-directory: infrastructure/terraform
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v3
@@ -135,7 +135,7 @@ jobs:
         working-directory: infrastructure/terraform
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v3
