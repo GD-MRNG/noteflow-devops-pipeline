@@ -19,10 +19,26 @@ env:
   TF_WORKSPACE: noteflow-staging
 
 jobs:
+  trivy-iac:
+    name: Trivy IaC Scan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trivy IaC scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: config
+          scan-ref: infrastructure/terraform/
+          severity: HIGH,CRITICAL
+          exit-code: 1
+
   plan:
     name: Plan
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    needs: trivy-iac
     defaults:
       run:
         working-directory: infrastructure/terraform
