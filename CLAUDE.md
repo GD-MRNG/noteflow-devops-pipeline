@@ -152,6 +152,35 @@ fly logs --app noteflow-production
 
 `helm lint kubernetes/helm/noteflow/` — validates the chart locally (requires Helm installed).
 
+## Security
+
+### HTTP security headers
+
+`middleware.ts` (project root) sets 9 security headers on every response via Next.js middleware. The matcher covers all paths except `/api/metrics`. Headers include CSP, HSTS, X-Frame-Options, COEP, COOP, CORP, and others — see the file for the full set.
+
+**CSP note:** `unsafe-inline` and `unsafe-eval` are present in `script-src` — this is required by Next.js App Router hydration and is a documented accepted risk in `docs/THREAT_MODEL.md`.
+
+`next.config.ts` sets `poweredByHeader: false` to suppress the `X-Powered-By: Next.js` response header.
+
+### Security scanning (CI/CD)
+
+| Tool | Where | What it scans |
+|---|---|---|
+| CodeQL | `.github/workflows/codeql.yml` | TypeScript source — SAST, runs on every PR |
+| Trivy (image) | `.github/workflows/build-push.yml` | Docker image CVEs — fails on fixable CRITICAL |
+| Trivy (IaC) | `.github/workflows/terraform.yml` | Terraform misconfigs — fails on HIGH/CRITICAL |
+| OWASP ZAP | `.github/workflows/deploy.yml` | Live staging app — passive DAST after every staging deploy; gates production |
+| SBOM | `.github/workflows/build-push.yml` | SPDX JSON artifact per build, retained 90 days |
+| Dependabot | `.github/dependabot.yml` | Weekly PRs for npm CVEs and GitHub Actions version bumps |
+
+### ZAP rules file
+
+`.zap/rules.tsv` suppresses 5 accepted WARNs. Format is exactly 3 tab-separated columns: `ruleId\tIGNORE\tName`. The file must have LF line endings (enforced by `.gitattributes`). The `zap-scan` job **must have `actions/checkout@v4`** — without it the rules file is not present in the runner workspace and all suppressions are silently skipped.
+
+### Threat model
+
+`docs/THREAT_MODEL.md` documents assets, threats, mitigations, least-privilege inventory, and known gaps.
+
 ## Key constraints
 
 - **Bun only** — use `bun` and `bunx`, not `npm`, `npx`, or `node`. Exception: the Docker runner stage uses `node server.js` (Next.js standalone output targets Node).

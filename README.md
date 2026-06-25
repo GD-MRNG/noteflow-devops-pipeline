@@ -19,7 +19,7 @@ The app itself is intentionally simple — a rich-text note editor with authenti
 | CD                     | GitHub Actions + GitHub Environments             | Auto-deploy to staging; manual approval gate for production                         |
 | Secrets                | Doppler                                          | Runtime secret injection; zero secrets in code or manifests                         |
 | Observability          | Grafana Cloud (Loki, Tempo, Prometheus)          | Structured pino logs → Loki; prom-client metrics → Alloy → Prometheus; OTel traces → Tempo |
-| Security               | CodeQL, Trivy, Dependabot, OWASP ZAP             | SAST + image scanning + DAST + dependency updates in CI                             |
+| Security               | CodeQL, Trivy, Dependabot, OWASP ZAP, SBOM       | SAST + IaC scan + image scan + DAST + dependency updates + supply chain inventory   |
 | Reliability            | Runbooks, SLOs, chaos tests                      | Documented failure playbooks; verified recovery behaviour                           |
 
 **Total ongoing cloud cost: ~$0/month** (all free tiers). The `COST.md` file documents the AWS equivalent (~$170/month) and the exact config changes needed to migrate.
@@ -119,7 +119,7 @@ The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each
 | 7 — CD pipeline                             | ✅ Complete |
 | 8 — Secrets management (Doppler)            | ✅ Complete |
 | 9 — Observability (Grafana Cloud)           | ✅ Complete |
-| 10 — Security pipeline                      | Pending     |
+| 10 — Security pipeline                      | ✅ Complete |
 | 11 — Reliability & runbooks                 | Pending     |
 | 12 — AI summarisation feature               | Pending     |
 | 13 — Portfolio documentation                | Pending     |
