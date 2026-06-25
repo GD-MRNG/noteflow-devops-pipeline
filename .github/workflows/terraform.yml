@@ -52,7 +52,7 @@ jobs:
       - name: Inject secrets from Doppler
         run: doppler secrets download --token "${{ secrets.DOPPLER_TOKEN_STAGING }}" --project noteflow --config staging --no-file --format env >> $GITHUB_ENV
 
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
         with:
           cli_config_credentials_token: ${{ env.TF_API_TOKEN }}
 
@@ -143,7 +143,7 @@ jobs:
       - name: Inject secrets from Doppler
         run: doppler secrets download --token "${{ secrets.DOPPLER_TOKEN_STAGING }}" --project noteflow --config staging --no-file --format env >> $GITHUB_ENV
 
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
         with:
           cli_config_credentials_token: ${{ env.TF_API_TOKEN }}
 
