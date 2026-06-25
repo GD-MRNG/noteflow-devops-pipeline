@@ -42,7 +42,7 @@ jobs:
           fail_action: true
           artifact_name: zap-report
           rules_file_name: .zap/rules.tsv
-          allow_issue_filing: false
+          allow_issue_writing: false
 
   deploy-production:
     needs: zap-scan
