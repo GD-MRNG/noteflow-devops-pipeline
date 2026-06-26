@@ -4,6 +4,8 @@ A note-taking app with a production-grade DevOps pipeline.
 
 The app itself is intentionally simple — a rich-text note editor with authentication and public sharing. The engineering focus is everything around it: containerisation, CI/CD, infrastructure as code, Kubernetes, secrets management, observability, and security scanning. The app is the vehicle; the pipeline is the destination.
 
+The same foundation — reproducible builds, secrets injection, SAST/DAST scanning, structured observability, and IaC-managed infrastructure — is what responsible delivery of any workload requires, including LLM-powered services. This repo demonstrates that foundation end-to-end.
+
 ---
 
 ## What this project demonstrates
@@ -19,7 +21,7 @@ The app itself is intentionally simple — a rich-text note editor with authenti
 | CD                     | GitHub Actions + GitHub Environments             | Auto-deploy to staging; manual approval gate for production                         |
 | Secrets                | Doppler                                          | Runtime secret injection; zero secrets in code or manifests                         |
 | Observability          | Grafana Cloud (Loki, Tempo, Prometheus)          | Structured pino logs → Loki; prom-client metrics → Alloy → Prometheus; OTel traces → Tempo |
-| Security               | CodeQL, Trivy, Dependabot, OWASP ZAP, SBOM       | SAST + IaC scan + image scan + DAST + dependency updates + supply chain inventory   |
+| Security               | CodeQL, Trivy, Dependabot, OWASP ZAP, SBOM       | SAST + IaC scan + image scan + DAST + dependency updates + supply chain inventory — the shift-left security pattern required for compliance-aware delivery in regulated cloud environments   |
 | Reliability            | Runbooks, SLOs, chaos tests                      | Documented failure playbooks; verified recovery behaviour                           |
 
 **Total ongoing cloud cost: ~$0/month** (all free tiers). The `COST.md` file documents the AWS equivalent (~$170/month) and the exact config changes needed to migrate.
@@ -121,7 +123,7 @@ The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each
 | 9 — Observability (Grafana Cloud)           | ✅ Complete |
 | 10 — Security pipeline                      | ✅ Complete |
 | 11 — Reliability & runbooks                 | Pending     |
-| 12 — AI summarisation feature               | Pending     |
+| 12 — AI summarisation feature               | Pending — LLM API endpoint behind a feature flag; circuit breaker + hard timeout on external API call; per-request metrics (latency, error rate) wired into existing observability stack |
 | 13 — Portfolio documentation                | Pending     |
 
 ---
@@ -135,7 +137,7 @@ Design decisions are documented in `docs/adr/` as they are made.
 - [`003`](docs/adr/003-terraform-vs-cdk.md) — Terraform vs CDK
 - `004` — Trunk-based development vs GitFlow *(Phase 11)*
 - `005` — Monolith vs microservices *(Phase 11)*
-- `006` — AI feature adoption *(Phase 12)*
+- [`006`](docs/adr/006-ai-feature-adoption.md) — AI feature adoption
 
 ---
 
