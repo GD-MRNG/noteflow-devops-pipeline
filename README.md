@@ -21,7 +21,7 @@ The same foundation — reproducible builds, secrets injection, SAST/DAST scanni
 | CD                     | GitHub Actions + GitHub Environments             | Auto-deploy to staging; manual approval gate for production                         |
 | Secrets                | Doppler                                          | Runtime secret injection; zero secrets in code or manifests                         |
 | Observability          | Grafana Cloud (Loki, Tempo, Prometheus)          | Structured pino logs → Loki; prom-client metrics → Alloy → Prometheus; OTel traces → Tempo |
-| Security               | CodeQL, Trivy, Dependabot, OWASP ZAP, SBOM       | SAST + IaC scan + image scan + DAST + dependency updates + supply chain inventory — the shift-left security pattern required for compliance-aware delivery in regulated cloud environments   |
+| Security               | CodeQL, Trivy, Dependabot, OWASP ZAP, SBOM       | SAST + IaC scan + image scan + DAST + dependency updates + supply chain inventory — the shift-left security pattern required for compliance-aware delivery |
 | Reliability            | Runbooks, SLOs, chaos tests                      | Documented failure playbooks; verified recovery behaviour                           |
 
 **Total ongoing cloud cost: ~$0/month** (all free tiers). The `COST.md` file documents the AWS equivalent (~$170/month) and the exact config changes needed to migrate.
