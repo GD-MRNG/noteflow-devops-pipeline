@@ -107,24 +107,24 @@ bun run test:run --coverage   # With coverage report
 
 ## DevOps plan
 
-The full 13-phase build plan lives in `devops_project_spec/DEVOPS_SPEC.md`. Each phase is a discrete, reviewable increment:
+The full 13-phase build plan:
 
-| Phase                                       | Status      |
-| ------------------------------------------- | ----------- |
-| 0 — Smoke test                              | ✅ Complete |
-| 1 — Source control                          | ✅ Complete |
-| 2 — Containerisation + PostgreSQL migration | ✅ Complete |
-| 3 — CI pipeline                             | ✅ Complete |
-| 4 — Artifact registry (GHCR)                | ✅ Complete |
-| 5 — Infrastructure as Code (Terraform)      | ✅ Complete |
-| 6 — Deployment (Fly.io + Helm)              | ✅ Complete |
-| 7 — CD pipeline                             | ✅ Complete |
-| 8 — Secrets management (Doppler)            | ✅ Complete |
-| 9 — Observability (Grafana Cloud)           | ✅ Complete |
-| 10 — Security pipeline                      | ✅ Complete |
-| 11 — Reliability & runbooks                 | Pending     |
-| 12 — AI summarisation feature               | Pending — LLM API endpoint behind a feature flag; circuit breaker + hard timeout on external API call; per-request metrics (latency, error rate) wired into existing observability stack |
-| 13 — Portfolio documentation                | Pending     |
+| Phase                                            | Status      |
+| ------------------------------------------------ | ----------- |
+| 0 — Smoke test                                   | ✅ Complete |
+| 1 — Source control                               | ✅ Complete |
+| 2 — Containerisation + PostgreSQL migration      | ✅ Complete |
+| 3 — CI pipeline                                  | ✅ Complete |
+| 4 — Artifact registry (GHCR)                     | ✅ Complete |
+| 5 — Infrastructure as Code (Terraform)           | ✅ Complete |
+| 6 — Deployment (Fly.io + Helm)                   | ✅ Complete |
+| 7 — CD pipeline                                  | ✅ Complete |
+| 8 — Secrets management (Doppler)                 | ✅ Complete |
+| 9 — Observability (Grafana Cloud)                | ✅ Complete |
+| 10 — Security pipeline                           | ✅ Complete |
+| 11 — Reliability & runbooks                      | Pending     |
+| 12 — AI summarisation feature                    | Pending     |
+| 13 — Portfolio documentation                     | Pending     |
 
 ---
 
